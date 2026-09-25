@@ -11,6 +11,7 @@ export function Shell({ children }: { children: ReactNode }) {
       <a href="#main" className="embed-hide sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-lg focus:bg-accent focus:px-3 focus:py-2 focus:text-white">
         Skip to content
       </a>
+      <div aria-hidden className="embed-hide h-1 bg-[linear-gradient(90deg,var(--color-maroon),var(--color-accent)_45%,var(--color-navy))]" />
       <header className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-5">
         <Link href="/" className="flex items-center gap-2.5" aria-label="AnimQR home">
           {/* eslint-disable-next-line @next/next/no-img-element */}

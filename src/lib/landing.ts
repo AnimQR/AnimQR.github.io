@@ -79,7 +79,7 @@ export const LANDING_PAGES: LandingPage[] = [
       contentType: "url",
       fields: {},
       style: {
-        gradient: { type: "linear", angle: 45, stops: ["#6d28d9", "#db2777"] },
+        gradient: { type: "linear", angle: 45, stops: ["#800020", "#0a1f44"] },
         module: "dots",
         eye: "rounded",
         anim: "pulse",
@@ -112,7 +112,7 @@ export const LANDING_PAGES: LandingPage[] = [
     defaults: {
       contentType: "url",
       fields: {},
-      style: { fg: "#0f172a", module: "rounded", eye: "circle", anim: "wave", fps: 20, format: "gif" },
+      style: { fg: "#0a1f44", eyeColor: "#800020", module: "rounded", eye: "circle", anim: "wave", fps: 20, format: "gif" },
     },
     steps: ["Enter the link or text to encode.", ...HOW_TO_STYLE],
     faq: [
@@ -140,7 +140,7 @@ export const LANDING_PAGES: LandingPage[] = [
     defaults: {
       contentType: "url",
       fields: {},
-      style: { ec: "H", module: "rounded", eye: "rounded", fg: "#1e3a8a", eyeColor: "#2563eb" },
+      style: { ec: "H", module: "rounded", eye: "rounded", fg: "#0a1f44", eyeColor: "#800020" },
     },
     steps: [
       "Enter your URL.",
@@ -173,7 +173,7 @@ export const LANDING_PAGES: LandingPage[] = [
     defaults: {
       contentType: "wifi",
       fields: { wifi: { ssid: "Guest Wi-Fi", password: "welcome123", security: "WPA", hidden: false } },
-      style: { frame: "label", frameText: "SCAN TO JOIN WI-FI", frameColor: "#0f766e", fg: "#134e4a", module: "rounded", eye: "rounded" },
+      style: { frame: "label", frameText: "SCAN TO JOIN WI-FI", frameColor: "#800020", fg: "#0a1f44", module: "rounded", eye: "rounded" },
     },
     steps: [
       "Enter your network name (SSID), security type and password.",
@@ -216,7 +216,7 @@ export const LANDING_PAGES: LandingPage[] = [
           address: "",
         },
       },
-      style: { ec: "M", fg: "#1f2937", module: "square", eye: "leaf", eyeColor: "#7c3aed" },
+      style: { ec: "M", fg: "#0a1f44", module: "square", eye: "leaf", eyeColor: "#800020" },
     },
     steps: [
       "Fill in your name, company, phone, email and website.",

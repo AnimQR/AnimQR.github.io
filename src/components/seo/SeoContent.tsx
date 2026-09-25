@@ -63,7 +63,7 @@ export function SeoContent({
           {faq.map((f) => (
             <details key={f.q} className="group p-4">
               <summary className="cursor-pointer list-none font-medium marker:hidden">
-                <span className="mr-2 inline-block text-accent transition group-open:rotate-90">›</span>
+                <span className="mr-2 inline-block text-accent-ink transition group-open:rotate-90">›</span>
                 {f.q}
               </summary>
               <p className="mt-2 pl-5 text-sm text-muted">{f.a}</p>

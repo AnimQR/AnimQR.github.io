@@ -8,6 +8,7 @@ import { describe, expect, it } from "vitest";
 import { ANIMATIONS, EYE_SHAPES, MODULE_SHAPES, SAFE_ANIMATIONS, sanitizeConfig, type QRConfig } from "@/lib/config";
 import { createMatrix, alignmentPositions } from "@/lib/qr/matrix";
 import { buildModel, renderFrame } from "@/lib/qr/render";
+import { BUILTIN_PRESETS } from "@/lib/presets";
 
 (globalThis as unknown as { Path2D: typeof Path2D }).Path2D = Path2D;
 
@@ -93,6 +94,12 @@ describe("scannability", () => {
       const img = ctx.getImageData(0, 0, canvas.width, canvas.height);
       expect(jsQR(img.data, img.width, img.height)?.data, `ec=${ec}`).toBe(DATA);
     }
+  });
+
+  it.each(BUILTIN_PRESETS.map((p) => [p.name, p]))("built-in preset %s scans", (_, p) => {
+    const config = sanitizeConfig({ ...p.style, data: DATA });
+    const frames = config.anim === "reveal" || config.anim === "particle" ? [0.7] : config.anim === "none" ? [0] : FRAMES;
+    for (const t of frames) expect(decodes(config, t), `t=${t}`).toBe(true);
   });
 
   it("colour cycle keeps contrast on every frame", () => {

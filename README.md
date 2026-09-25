@@ -28,7 +28,7 @@ Open the app with a `data` (or `text`) parameter and it generates the code immed
 https://animqr.github.io/?data=https%3A%2F%2Fexample.com
 https://animqr.github.io/?text=Hello%20World&fg=%23ff0000&bg=%23ffffff&size=400
 https://animqr.github.io/generate/?data=WIFI:T:WPA;S:MyNetwork;P:password123;;&ec=H&anim=pulse
-https://animqr.github.io/?data=https%3A%2F%2Fgithub.com&module=dots&eye=circle&gradient=linear-45-0ea5e9-7c3aed&anim=wave
+https://animqr.github.io/?data=https%3A%2F%2Fgithub.com&module=dots&eye=circle&gradient=linear-45-800020-0a1f44&anim=wave
 https://animqr.github.io/?c=N4IgLgpg...   (full compressed config, produced by "Copy shareable link")
 ```
 
@@ -42,7 +42,7 @@ https://animqr.github.io/?c=N4IgLgpg...   (full compressed config, produced by "
 | `gradient` | `linear-<angle>-<from>-<to>` or `radial-<from>-<to>` | `linear-45-ff0-f0f` |
 | `module` | `square` `rounded` `dots` `diamond` `star` `vbars` `hbars` | `dots` |
 | `eye` | `square` `rounded` `circle` `leaf` | `rounded` |
-| `eyeColor` | Corner-eye colour | `4f46e5` |
+| `eyeColor` | Corner-eye colour | `800020` |
 | `logo` | http(s) image URL (the server must send CORS headers) | `https://…/logo.png` |
 | `logoSize` | Logo width as a fraction of the code (0.08–0.3, capped by `ec`) | `0.22` |
 | `frame` | `none` `square` `rounded` `label` | `label` |

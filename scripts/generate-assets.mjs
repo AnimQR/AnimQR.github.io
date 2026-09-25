@@ -18,7 +18,7 @@ for (const f of ["/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", "/usr/s
 const FONT = "DejaVu Sans, Helvetica, Arial, sans-serif";
 
 // ---------------------------------------------------------------------------
-// Logo: three QR "eyes" + a play button, on a violet→pink gradient.
+// Logo: three QR "eyes" + a play button, on a maroon→navy gradient.
 // ---------------------------------------------------------------------------
 
 function logoSvg({ padded = false } = {}) {
@@ -32,7 +32,7 @@ function logoSvg({ padded = false } = {}) {
     ? `<rect width="64" height="64" fill="url(#g)"/>`
     : `<rect width="64" height="64" rx="14" fill="url(#g)"/>`;
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
-<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7c5cff"/><stop offset="1" stop-color="#db2777"/></linearGradient></defs>
+<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#9b1437"/><stop offset=".45" stop-color="#800020"/><stop offset="1" stop-color="#0a1f44"/></linearGradient></defs>
 ${bg}
 <g transform="translate(${o} ${o}) scale(${s})">
 ${eye(8, 8)}${eye(38, 8)}${eye(8, 38)}
@@ -99,8 +99,8 @@ function drawQr(ctx, data, x, y, size) {
   const ox = x + pad * m;
   const oy = y + pad * m;
   const grad = ctx.createLinearGradient(ox, oy, ox + n * m, oy + n * m);
-  grad.addColorStop(0, "#6d28d9");
-  grad.addColorStop(1, "#db2777");
+  grad.addColorStop(0, "#800020");
+  grad.addColorStop(1, "#0a1f44");
   ctx.fillStyle = grad;
   const isEye = (r, c) => (r < 7 && c < 7) || (r < 7 && c >= n - 7) || (r >= n - 7 && c < 7);
   // Alignment pattern (version ≥ 2) drawn solid, like the app does.
@@ -133,17 +133,24 @@ async function socialImage(file, siteUrl) {
   const H = 630;
   const c = createCanvas(W, H);
   const ctx = c.getContext("2d");
-  ctx.fillStyle = "#0b0d14";
+  ctx.fillStyle = "#07112b";
   ctx.fillRect(0, 0, W, H);
-  const glow = ctx.createRadialGradient(900, 315, 40, 900, 315, 520);
-  glow.addColorStop(0, "rgba(124,92,255,0.45)");
-  glow.addColorStop(1, "rgba(124,92,255,0)");
+  const glow = ctx.createRadialGradient(900, 315, 40, 900, 315, 560);
+  glow.addColorStop(0, "rgba(189,47,85,0.55)");
+  glow.addColorStop(1, "rgba(128,0,32,0)");
   ctx.fillStyle = glow;
   ctx.fillRect(0, 0, W, H);
 
+  const bar = ctx.createLinearGradient(0, 0, W, 0);
+  bar.addColorStop(0, "#800020");
+  bar.addColorStop(0.45, "#bd2f55");
+  bar.addColorStop(1, "#0a1f44");
+  ctx.fillStyle = bar;
+  ctx.fillRect(0, 0, W, 10);
+
   const logo = await loadImage(Buffer.from(logoSvg().replace('width="64" height="64"', 'width="88" height="88"')));
   ctx.drawImage(logo, 72, 72, 88, 88);
-  ctx.fillStyle = "#e8eaf2";
+  ctx.fillStyle = "#eef1f8";
   ctx.font = `bold 44px ${FONT}`;
   ctx.textBaseline = "middle";
   ctx.fillText("AnimQR", 180, 118);
@@ -155,13 +162,13 @@ async function socialImage(file, siteUrl) {
   title.forEach((line, i) => ctx.fillText(line, 72, 262 + i * 70, maxW));
 
   ctx.font = `28px ${FONT}`;
-  ctx.fillStyle = "#9aa1b8";
+  ctx.fillStyle = "#a9b4cf";
   ["Export GIF · MP4 · SVG · PNG", "Logos · gradients · frames", "No sign-up · no watermark · open source"].forEach((line, i) =>
     ctx.fillText(line, 72, 400 + i * 42, maxW),
   );
 
   ctx.font = `bold 26px ${FONT}`;
-  ctx.fillStyle = "#a78bfa";
+  ctx.fillStyle = "#f28ba3";
   ctx.fillText(siteUrl.replace(/^https?:\/\//, ""), 72, 566);
 
   ctx.save();

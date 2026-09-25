@@ -162,7 +162,7 @@ export function StylePanel() {
         <Toggle
           label="Gradient foreground"
           checked={!!gradient}
-          onChange={(on) => update({ gradient: on ? { type: "linear", angle: 45, stops: [config.fg, "#7c3aed"] } : null })}
+          onChange={(on) => update({ gradient: on ? { type: "linear", angle: 45, stops: ["#800020", config.fg === "#800020" ? "#0a1f44" : config.fg] } : null })}
         />
         {gradient && (
           <div className="space-y-3 rounded-lg border border-line p-3">

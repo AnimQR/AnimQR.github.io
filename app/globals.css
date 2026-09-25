@@ -1,24 +1,33 @@
 @import "tailwindcss";
 
+/*
+ * Theme: navy blue + maroon.
+ * Navy carries backgrounds and text; maroon is the accent (buttons, active states, highlights).
+ * `accent-ink` is the accent used for text and focus rings, tuned for contrast on each background.
+ */
 @theme {
-  --color-bg: #0b0d14;
-  --color-surface: #121521;
-  --color-surface-2: #181c2b;
-  --color-line: #2a3045;
-  --color-fg: #e8eaf2;
-  --color-muted: #9aa1b8;
-  --color-accent: #7c5cff;
+  --color-bg: #07112b;
+  --color-surface: #0c1a3d;
+  --color-surface-2: #11224d;
+  --color-line: #213666;
+  --color-fg: #eef1f8;
+  --color-muted: #a9b4cf;
+  --color-accent: #bd2f55;
+  --color-accent-ink: #f28ba3;
+  --color-navy: #0a1f44;
+  --color-maroon: #800020;
 }
 
 @media (prefers-color-scheme: light) {
   :root:not(.dark) {
-    --color-bg: #f7f7fb;
+    --color-bg: #f7f5f6;
     --color-surface: #ffffff;
     --color-surface-2: #ffffff;
-    --color-line: #dcdfea;
-    --color-fg: #151827;
-    --color-muted: #5d6479;
-    --color-accent: #6a48f5;
+    --color-line: #dcdde8;
+    --color-fg: #0a1f44;
+    --color-muted: #4a5675;
+    --color-accent: #800020;
+    --color-accent-ink: #800020;
   }
 }
 
@@ -30,6 +39,10 @@ body {
   background: var(--color-bg);
   color: var(--color-fg);
   -webkit-tap-highlight-color: transparent;
+}
+
+::selection {
+  background: color-mix(in srgb, var(--color-accent) 35%, transparent);
 }
 
 html.embed body {
@@ -48,7 +61,7 @@ html.embed body {
 }
 
 :focus-visible {
-  outline: 2px solid var(--color-accent);
+  outline: 2px solid var(--color-accent-ink);
   outline-offset: 2px;
 }
 

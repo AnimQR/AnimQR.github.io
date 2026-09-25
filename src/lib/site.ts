@@ -47,8 +47,10 @@ export const SITE = {
   author: env("NEXT_PUBLIC_AUTHOR") ?? "AnimQR contributors",
   /** Twitter/X handle including "@", optional. */
   twitter: env("NEXT_PUBLIC_TWITTER_HANDLE"),
-  themeColor: { light: "#f7f7fb", dark: "#0b0d14" },
-  brandColor: "#7c5cff",
+  themeColor: { light: "#f7f5f6", dark: "#07112b" },
+  /** Maroon — the accent colour. Navy (#0a1f44) is the base colour. */
+  brandColor: "#800020",
+  navyColor: "#0a1f44",
   /** Search console verification tokens (the `content` value of the meta tag each tool gives you). */
   verification: {
     google: env("NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION"),

@@ -25,7 +25,7 @@ const PARAMS: [string, string, string][] = [
   ["gradient", "linear-<angle>-<from>-<to> or radial-<from>-<to>", "linear-45-ff0-f0f"],
   ["module", list(MODULE_SHAPES), "dots"],
   ["eye", list(EYE_SHAPES), "rounded"],
-  ["eyeColor", "Colour of the three corner eyes", "4f46e5"],
+  ["eyeColor", "Colour of the three corner eyes", "800020"],
   ["logo", "http(s) image URL — the server must send CORS headers", "https://…/logo.png"],
   ["logoSize", `Logo width as a fraction of the code (${LIMITS.logoSize[0]}–${LIMITS.logoSize[1]})`, "0.22"],
   ["frame", list(FRAMES), "label"],
@@ -43,8 +43,8 @@ const EXAMPLES = [
   "?data=https%3A%2F%2Fexample.com",
   "?text=Hello%20World&fg=%23ff0000&bg=%23ffffff&size=400",
   "generate/?data=WIFI:T:WPA;S:MyNetwork;P:password123;;&ec=H&anim=pulse",
-  "?data=https%3A%2F%2Fgithub.com&module=dots&eye=circle&gradient=linear-45-0ea5e9-7c3aed&anim=wave",
-  "?data=Hello&frame=label&frameText=SCAN%20ME&frameColor=4f46e5&module=vbars",
+  "?data=https%3A%2F%2Fgithub.com&module=dots&eye=circle&gradient=linear-45-800020-0a1f44&anim=wave",
+  "?data=Hello&frame=label&frameText=SCAN%20ME&frameColor=800020&module=vbars",
   "?data=https%3A%2F%2Fexample.com&anim=colorCycle&embed=1",
 ];
 
