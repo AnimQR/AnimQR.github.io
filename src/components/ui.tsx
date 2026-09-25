@@ -28,7 +28,7 @@ export function Field({ label, children, hint }: { label: string; children: (id:
 }
 
 export const inputClass =
-  "w-full rounded-lg border border-line bg-surface-2 px-3 py-2 text-sm outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/30 placeholder:text-muted/70";
+  "min-h-11 w-full rounded-lg border border-line bg-surface-2 px-3 py-2 text-base outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/30 placeholder:text-muted/70 sm:min-h-10 sm:text-sm";
 
 export function TextInput(props: React.InputHTMLAttributes<HTMLInputElement>) {
   return <input {...props} className={`${inputClass} ${props.className ?? ""}`} />;
@@ -86,7 +86,7 @@ export function Segmented<T extends string>({
             aria-checked={active}
             title={o.title}
             onClick={() => onChange(o.value)}
-            className={`min-h-10 rounded-lg border px-3 py-1.5 text-sm transition ${
+            className={`min-h-11 rounded-lg border px-3 py-1.5 text-sm transition active:scale-[0.97] sm:min-h-10 ${
               active
                 ? "border-accent bg-accent/15 text-fg"
                 : "border-line bg-surface-2 text-muted hover:border-muted hover:text-fg"
@@ -130,7 +130,7 @@ export function ColorInput({
           aria-label={`${label} picker`}
           value={swatch}
           onChange={(e) => onChange(e.target.value)}
-          className="h-10 w-12 shrink-0 cursor-pointer rounded-lg border border-line bg-surface-2 p-1"
+          className="h-11 w-12 shrink-0 cursor-pointer rounded-lg border border-line bg-surface-2 p-1 sm:h-10"
         />
         <input
           id={id}
@@ -150,7 +150,7 @@ export function ColorInput({
           <button
             type="button"
             onClick={() => onChange(isTransparent ? "#ffffff" : "transparent")}
-            className={`h-10 shrink-0 rounded-lg border px-2 text-xs ${isTransparent ? "border-accent text-fg" : "border-line text-muted"}`}
+            className={`h-11 shrink-0 rounded-lg border px-2.5 text-xs sm:h-10 ${isTransparent ? "border-accent text-fg" : "border-line text-muted"}`}
             title="Transparent background"
           >
             None
@@ -160,7 +160,7 @@ export function ColorInput({
           <button
             type="button"
             onClick={() => onChange("")}
-            className="h-10 shrink-0 rounded-lg border border-line px-2 text-xs text-muted"
+            className="h-11 shrink-0 rounded-lg border border-line px-2.5 text-xs text-muted sm:h-10"
             title="Use the foreground colour"
           >
             Auto
@@ -205,28 +205,27 @@ export function Slider({
         step={step}
         value={value}
         onChange={(e) => onChange(Number(e.target.value))}
-        className="w-full accent-[var(--color-accent)]"
+        className="range h-8 w-full accent-[var(--color-accent)]"
       />
     </div>
   );
 }
 
 export function Toggle({ label, checked, onChange }: { label: string; checked: boolean; onChange: (v: boolean) => void }) {
+  // The whole row (track + label) is one large tap target.
   return (
-    <label className="inline-flex cursor-pointer items-center gap-2 text-sm">
-      <span
-        role="switch"
-        aria-checked={checked}
-        aria-label={label}
-        tabIndex={0}
-        onKeyDown={(e) => (e.key === " " || e.key === "Enter") && (e.preventDefault(), onChange(!checked))}
-        onClick={() => onChange(!checked)}
-        className={`relative h-6 w-10 rounded-full transition ${checked ? "bg-accent" : "bg-line"}`}
-      >
-        <span className={`absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition ${checked ? "left-[18px]" : "left-0.5"}`} />
+    <button
+      type="button"
+      role="switch"
+      aria-checked={checked}
+      onClick={() => onChange(!checked)}
+      className="inline-flex min-h-11 cursor-pointer select-none items-center gap-2.5 rounded-lg text-left text-sm"
+    >
+      <span aria-hidden className={`relative h-6 w-10 shrink-0 rounded-full transition ${checked ? "bg-accent" : "bg-line"}`}>
+        <span className={`absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition-all ${checked ? "left-[18px]" : "left-0.5"}`} />
       </span>
       {label}
-    </label>
+    </button>
   );
 }
 
@@ -244,7 +243,7 @@ export function Button({
     <button
       type="button"
       {...props}
-      className={`inline-flex min-h-10 items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition ${styles} ${className}`}
+      className={`inline-flex min-h-11 items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition active:scale-[0.98] sm:min-h-10 ${styles} ${className}`}
     />
   );
 }

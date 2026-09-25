@@ -2,6 +2,8 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import { LANDING_PAGES } from "@/lib/landing";
 import { SITE } from "@/lib/site";
+import { ThemeToggle } from "./ThemeToggle";
+import { Toaster } from "./Toaster";
 
 export const REPO_URL = SITE.repoUrl;
 
@@ -12,8 +14,8 @@ export function Shell({ children }: { children: ReactNode }) {
         Skip to content
       </a>
       <div aria-hidden className="embed-hide h-1 bg-[linear-gradient(90deg,var(--color-maroon),var(--color-accent)_45%,var(--color-navy))]" />
-      <header className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-5">
-        <Link href="/" className="flex items-center gap-2.5" aria-label="AnimQR home">
+      <header className="mx-auto flex max-w-6xl items-center justify-between gap-2 px-4 py-3 sm:py-4">
+        <Link href="/" className="flex min-h-11 items-center gap-2.5" aria-label="AnimQR home">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={`${process.env.NEXT_PUBLIC_BASE_PATH || ""}/icon.svg`} alt="" width={36} height={36} className="h-9 w-9" />
           <span className="text-lg font-semibold tracking-tight">AnimQR</span>
@@ -21,36 +23,38 @@ export function Shell({ children }: { children: ReactNode }) {
             free · open source
           </span>
         </Link>
-        <nav aria-label="Main" className="flex items-center gap-4 text-sm text-muted">
-          <Link href="/animated-qr-code-generator/" className="hidden hover:text-fg md:inline">
+        <nav aria-label="Main" className="flex items-center text-sm text-muted">
+          <Link href="/animated-qr-code-generator/" className="hidden min-h-11 items-center px-3 hover:text-fg md:inline-flex">
             Animated QR
           </Link>
-          <Link href="/docs/" className="hover:text-fg">
+          <Link href="/docs/" className="inline-flex min-h-11 items-center whitespace-nowrap px-2 hover:text-fg sm:px-3">
             URL API
           </Link>
-          <a href={REPO_URL} className="hover:text-fg" target="_blank" rel="noopener">
+          <a href={REPO_URL} className="hidden min-h-11 items-center px-2 hover:text-fg min-[360px]:inline-flex sm:px-3" target="_blank" rel="noopener">
             GitHub
           </a>
+          <ThemeToggle />
         </nav>
       </header>
       <main id="main">{children}</main>
+      <Toaster />
       <footer className="mx-auto max-w-6xl space-y-4 border-t border-line px-4 py-10 text-xs text-muted">
         <nav aria-label="QR code tools">
-          <ul className="flex flex-wrap gap-x-4 gap-y-2">
+          <ul className="flex flex-wrap gap-x-1 gap-y-0">
             <li>
-              <Link href="/" className="hover:text-fg">
+              <Link href="/" className="inline-flex min-h-10 items-center px-1.5 hover:text-fg">
                 QR code generator
               </Link>
             </li>
             {LANDING_PAGES.map((p) => (
               <li key={p.slug}>
-                <Link href={`/${p.slug}/`} className="hover:text-fg">
+                <Link href={`/${p.slug}/`} className="inline-flex min-h-10 items-center px-1.5 hover:text-fg">
                   {p.nav}
                 </Link>
               </li>
             ))}
             <li>
-              <Link href="/docs/" className="hover:text-fg">
+              <Link href="/docs/" className="inline-flex min-h-10 items-center px-1.5 hover:text-fg">
                 URL API
               </Link>
             </li>

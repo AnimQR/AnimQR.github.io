@@ -61,12 +61,12 @@ export function SeoContent({
         </h2>
         <div className="divide-y divide-line rounded-xl border border-line bg-surface">
           {faq.map((f) => (
-            <details key={f.q} className="group p-4">
-              <summary className="cursor-pointer list-none font-medium marker:hidden">
+            <details key={f.q} className="group">
+              <summary className="flex min-h-12 cursor-pointer list-none items-center px-4 py-3 font-medium marker:hidden [&::-webkit-details-marker]:hidden">
                 <span className="mr-2 inline-block text-accent-ink transition group-open:rotate-90">›</span>
                 {f.q}
               </summary>
-              <p className="mt-2 pl-5 text-sm text-muted">{f.a}</p>
+              <p className="px-4 pb-4 pl-9 text-sm text-muted">{f.a}</p>
             </details>
           ))}
         </div>

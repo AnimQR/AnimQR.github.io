@@ -1,9 +1,79 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { LIMITS } from "@/lib/config";
 import { CONTENT_LABELS, CONTENT_TYPES } from "@/lib/content";
 import { useStore } from "@/lib/store";
 import { Field, Section, Segmented, Select, TextArea, TextInput, Toggle } from "./ui";
+
+/** Looks like a bare domain ("example.com/page") that scanners wouldn't open as a link. */
+function needsScheme(v: string) {
+  const t = v.trim();
+  return t !== "" && !/^[a-z][a-z0-9+.-]*:/i.test(t) && /^[^\s/]+\.[a-z]{2,}(\/\S*)?$/i.test(t);
+}
+
+function UrlField({ value, onChange }: { value: string; onChange: (v: string) => void }) {
+  const [canPaste, setCanPaste] = useState(false);
+  useEffect(() => setCanPaste(typeof navigator !== "undefined" && !!navigator.clipboard?.readText), []);
+  const paste = async () => {
+    try {
+      const text = (await navigator.clipboard.readText()).trim();
+      if (text) onChange(text);
+    } catch {
+      /* permission denied — ignore */
+    }
+  };
+  const small = "inline-flex min-h-11 shrink-0 items-center rounded-lg border border-line bg-surface-2 px-3 text-sm text-muted hover:text-fg sm:min-h-10";
+  return (
+    <Field
+      label="Website URL"
+      hint={
+        needsScheme(value) ? (
+          <span className="flex flex-wrap items-center gap-x-2 text-amber-700 dark:text-amber-300">
+            Without https:// most phones show this as plain text.
+            <button type="button" className="min-h-9 font-semibold underline" onClick={() => onChange("https://" + value.trim())}>
+              Add https://
+            </button>
+          </span>
+        ) : undefined
+      }
+    >
+      {(id) => (
+        <div className="flex gap-2">
+          <div className="relative min-w-0 flex-1">
+            <TextInput
+              id={id}
+              type="url"
+              inputMode="url"
+              autoComplete="url"
+              autoCapitalize="none"
+              spellCheck={false}
+              placeholder="https://example.com"
+              value={value}
+              onChange={(e) => onChange(e.target.value)}
+              className="pr-10"
+            />
+            {value && (
+              <button
+                type="button"
+                onClick={() => onChange("")}
+                aria-label="Clear URL"
+                className="absolute inset-y-0 right-0 grid w-10 place-items-center text-lg text-muted hover:text-fg"
+              >
+                ×
+              </button>
+            )}
+          </div>
+          {canPaste && (
+            <button type="button" onClick={paste} className={small}>
+              Paste
+            </button>
+          )}
+        </div>
+      )}
+    </Field>
+  );
+}
 
 export function ContentPanel() {
   const { contentType, fields, config, setContentType, setFields } = useStore();
@@ -20,20 +90,7 @@ export function ContentPanel() {
       </Section>
 
       <Section title="Content">
-        {contentType === "url" && (
-          <Field label="Website URL">
-            {(id) => (
-              <TextInput
-                id={id}
-                type="url"
-                inputMode="url"
-                placeholder="https://example.com"
-                value={fields.url}
-                onChange={(e) => setFields("url", e.target.value)}
-              />
-            )}
-          </Field>
-        )}
+        {contentType === "url" && <UrlField value={fields.url} onChange={(v) => setFields("url", v)} />}
 
         {contentType === "text" && (
           <Field label="Text">
@@ -163,7 +220,7 @@ export function ContentPanel() {
 
       {config.data && (
         <details className="rounded-lg border border-line bg-surface-2 p-3 text-sm">
-          <summary className="cursor-pointer text-muted">
+          <summary className="flex min-h-9 cursor-pointer items-center gap-1 text-muted">
             Encoded data <span className="font-mono text-xs">({new TextEncoder().encode(config.data).length} bytes)</span>
           </summary>
           <pre className="mt-2 max-h-40 overflow-auto whitespace-pre-wrap break-all font-mono text-xs">{config.data}</pre>
