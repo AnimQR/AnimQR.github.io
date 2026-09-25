@@ -62,6 +62,7 @@ export function ExportBar({ config, logo, disabled }: { config: QRConfig; logo: 
       <div className="flex flex-wrap gap-2">
         <div className="min-w-40 flex-1">
           <Select
+            label="Download format"
             value={format}
             onChange={(f) => update({ format: f })}
             options={FORMATS.map((f) => ({ value: f, label: FORMAT_LABELS[f] }))}

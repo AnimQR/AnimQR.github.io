@@ -1,12 +1,18 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Shell } from "@/components/Shell";
+import { JsonLd } from "@/components/seo/JsonLd";
+import { pageMetadata } from "@/lib/metadata";
+import { breadcrumbSchema } from "@/lib/schema";
 import { ANIMATIONS, EYE_SHAPES, FORMATS, FRAMES, LIMITS, MODULE_SHAPES } from "@/lib/config";
 
-export const metadata: Metadata = {
-  title: "URL API — AnimQR",
-  description: "Generate styled, animated QR codes straight from a link.",
-};
+export const metadata: Metadata = pageMetadata({
+  title: "QR Code URL API — Generate QR Codes from a Link",
+  description:
+    "Generate styled, animated QR codes straight from a URL. Reference for every parameter: data, colours, gradients, shapes, logo, frame, animation and export format.",
+  path: "/docs/",
+  keywords: ["qr code api", "qr code url parameters", "generate qr code from url"],
+});
 
 const list = (xs: readonly string[]) => xs.map((x) => `\`${x}\``).join(" · ");
 
@@ -57,7 +63,13 @@ function Md({ text }: { text: string }) {
 export default function Docs() {
   return (
     <Shell>
-      <main className="mx-auto max-w-4xl space-y-10 px-4 pb-16">
+      <JsonLd
+        data={breadcrumbSchema([
+          { name: "QR code generator", path: "/" },
+          { name: "URL API", path: "/docs/" },
+        ])}
+      />
+      <div className="mx-auto max-w-4xl space-y-10 px-4 pb-16">
         <section className="space-y-3">
           <h1 className="text-3xl font-semibold tracking-tight">URL API</h1>
           <p className="text-muted">
@@ -122,7 +134,7 @@ export default function Docs() {
             <li>Everything is rendered locally in the browser; no data is sent to any server.</li>
           </ul>
         </section>
-      </main>
+      </div>
     </Shell>
   );
 }

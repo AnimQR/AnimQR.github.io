@@ -6,7 +6,7 @@ export function Section({ title, children, aside }: { title: string; children: R
   return (
     <section className="space-y-3">
       <div className="flex items-center justify-between">
-        <h3 className="text-xs font-semibold uppercase tracking-wider text-muted">{title}</h3>
+        <h2 className="text-xs font-semibold uppercase tracking-wider text-muted">{title}</h2>
         {aside}
       </div>
       {children}
@@ -40,17 +40,20 @@ export function TextArea(props: React.TextareaHTMLAttributes<HTMLTextAreaElement
 
 export function Select<T extends string>({
   id,
+  label,
   value,
   options,
   onChange,
 }: {
   id?: string;
+  /** Accessible name when there is no visible <label>. */
+  label?: string;
   value: T;
   options: readonly { value: T; label: string }[];
   onChange: (v: T) => void;
 }) {
   return (
-    <select id={id} value={value} onChange={(e) => onChange(e.target.value as T)} className={inputClass}>
+    <select id={id} aria-label={label} value={value} onChange={(e) => onChange(e.target.value as T)} className={inputClass}>
       {options.map((o) => (
         <option key={o.value} value={o.value}>
           {o.label}
@@ -214,6 +217,7 @@ export function Toggle({ label, checked, onChange }: { label: string; checked: b
       <span
         role="switch"
         aria-checked={checked}
+        aria-label={label}
         tabIndex={0}
         onKeyDown={(e) => (e.key === " " || e.key === "Enter") && (e.preventDefault(), onChange(!checked))}
         onClick={() => onChange(!checked)}

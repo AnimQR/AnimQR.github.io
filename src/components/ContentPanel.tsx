@@ -30,7 +30,6 @@ export function ContentPanel() {
                 placeholder="https://example.com"
                 value={fields.url}
                 onChange={(e) => setFields("url", e.target.value)}
-                autoFocus
               />
             )}
           </Field>

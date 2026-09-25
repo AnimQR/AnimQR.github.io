@@ -16,6 +16,9 @@ browser, with no sign-up and no tracking, and nothing you type is uploaded.
 - **Built-in scannability check:** frames are decoded in the browser (jsQR) as you edit
 - **Presets:** built-in styles, plus your own saved in `localStorage`
 - **Embed mode:** `?embed=1` shows only the code, for iframes
+- **Preloaded URL:** first-time visitors see a ready-made, scannable code instead of an empty form
+- **SEO-ready:** landing pages for each use case, a sitemap, robots.txt, structured data,
+  social cards, favicons and a web app manifest (see [SEO](#seo))
 
 ## URL API
 
@@ -59,6 +62,45 @@ parameters override values inside `c`, so you can tweak a shared link by appendi
 **Safety:** content is capped at 2048 characters. Content that starts with `javascript:`,
 `vbscript:`, `data:` or `file:` is rejected, and so are control characters. Logos must be
 http(s) or uploaded images, and colours must be hex. Everything renders locally.
+
+## SEO
+
+AnimQR scores 100 for SEO in Lighthouse. Search engines get:
+
+| What | Where |
+|------|-------|
+| Unique `<title>`, description, keywords and canonical URL per page | `src/lib/metadata.ts` |
+| Open Graph + Twitter cards with a 1200×630 image (its QR code scans to the site) | `app/opengraph-image.png`, `app/twitter-image.png` |
+| Favicons: `favicon.ico` (16/32/48), SVG icon, Apple touch icon, PWA icons (192/512 + maskable) | `app/`, `public/`, `app/manifest.ts` |
+| `sitemap.xml` and `robots.txt` (the query-driven `/generate/` alias is `noindex`) | `app/sitemap.ts`, `app/robots.ts` |
+| JSON-LD: `WebSite`, `Organization`, `WebApplication`, `HowTo`, `FAQPage`, `BreadcrumbList` | `src/lib/schema.ts` |
+| Server-rendered H1, intro, how-to steps, features, FAQ and internal links, plus a pre-rendered SVG of the code (visible without JavaScript) | `src/components/seo/` |
+| Landing pages: animated QR, QR GIF, QR with logo, Wi-Fi, vCard, URL | `src/lib/landing.ts` |
+
+### SEO options
+
+Set these at build time. For the GitHub Pages workflow, add them as repository **variables**
+under *Settings → Secrets and variables → Actions → Variables*, using the names in brackets:
+
+| Env var (repo variable) | Purpose | Default |
+|---|---|---|
+| `NEXT_PUBLIC_SITE_URL` (`SITE_URL`) | Public URL used for canonical links, sitemap and social cards | `https://animqr.github.io` |
+| `NEXT_PUBLIC_PRELOAD_URL` (`PRELOAD_URL`) | URL encoded in the code first-time visitors see | the site URL |
+| `NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION` (`GOOGLE_SITE_VERIFICATION`) | Google Search Console token | — |
+| `NEXT_PUBLIC_BING_SITE_VERIFICATION` (`BING_SITE_VERIFICATION`) | Bing Webmaster Tools token | — |
+| `NEXT_PUBLIC_YANDEX_VERIFICATION` (`YANDEX_VERIFICATION`) | Yandex Webmaster token | — |
+| `NEXT_PUBLIC_PINTEREST_VERIFICATION` (`PINTEREST_VERIFICATION`) | Pinterest domain verification | — |
+| `NEXT_PUBLIC_TWITTER_HANDLE` (`TWITTER_HANDLE`) | `@handle` for Twitter/X cards | — |
+| `NEXT_PUBLIC_NOINDEX` (`NOINDEX`) | `1` blocks indexing (staging/preview builds) | — |
+
+Titles, descriptions and keywords live in `src/lib/site.ts`, and the use-case pages live in
+`src/lib/landing.ts`. To add a landing page, add an entry there and it's picked up by the
+sitemap, footer and internal links automatically. `tests/seo.test.ts` checks title and
+description lengths. After changing the artwork, regenerate the icons and social images with
+`npm run assets`.
+
+After the first deploy, submit `https://animqr.github.io/sitemap.xml` in Google Search Console
+and Bing Webmaster Tools.
 
 ## Scannability
 

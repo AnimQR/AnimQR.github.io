@@ -59,6 +59,7 @@ html.embed body {
 }
 
 html.embed header,
-html.embed footer {
+html.embed footer,
+html.embed .embed-hide {
   display: none;
 }

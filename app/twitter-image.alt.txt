@@ -1,0 +1,1 @@
+AnimQR — free animated QR code generator. Export GIF, MP4, SVG and PNG.

@@ -1,7 +1,9 @@
 "use client";
 
 import { create } from "zustand";
-import { DEFAULT_CONFIG, parseUrlParams, sanitizeConfig, type QRConfig } from "./config";
+import { parseUrlParams, sanitizeConfig, type QRConfig } from "./config";
+import type { PageDefaults } from "./landing";
+import { HOME_DEFAULTS, initialState } from "./defaults";
 import {
   buildContent,
   detectContentType,
@@ -22,13 +24,18 @@ interface State {
   urlWarnings: string[];
   syncUrl: boolean;
   hydrated: boolean;
+  pageDefaults: PageDefaults;
 
   update(partial: Partial<QRConfig>): void;
   setContentType(type: ContentType): void;
   setFields<K extends keyof ContentFields>(key: K, value: ContentFields[K]): void;
   applyStyle(style: Partial<QRConfig>): void;
   setSyncUrl(on: boolean): void;
-  hydrate(search: string): void;
+  /**
+   * Initialise from the page URL. Without URL parameters, the home page restores the last-used
+   * settings (or the preloaded URL on a first visit) and landing pages start from their defaults.
+   */
+  hydrate(search: string, defaults?: PageDefaults, restoreSaved?: boolean): void;
   reset(): void;
 }
 
@@ -58,9 +65,8 @@ function loadLast(): Pick<State, "config" | "contentType" | "fields"> | null {
 }
 
 export const useStore = create<State>((set, get) => ({
-  config: DEFAULT_CONFIG,
-  contentType: "url",
-  fields: EMPTY_FIELDS,
+  ...initialState(HOME_DEFAULTS),
+  pageDefaults: HOME_DEFAULTS,
   fromUrl: false,
   embed: false,
   urlWarnings: [],
@@ -98,7 +104,8 @@ export const useStore = create<State>((set, get) => ({
     set({ syncUrl });
   },
 
-  hydrate(search) {
+  hydrate(search, defaults = HOME_DEFAULTS, restoreSaved = true) {
+    set({ pageDefaults: defaults });
     const parsed = parseUrlParams(search);
     if (parsed.fromUrl) {
       const { type, fields } = detectContentType(parsed.config.data);
@@ -113,12 +120,12 @@ export const useStore = create<State>((set, get) => ({
       });
       return;
     }
-    const last = loadLast();
-    set({ ...(last ?? {}), fromUrl: false, embed: parsed.embed, urlWarnings: parsed.warnings, hydrated: true });
+    const last = restoreSaved ? loadLast() : null;
+    set({ ...(last && last.config.data ? last : initialState(defaults)), fromUrl: false, embed: parsed.embed, urlWarnings: parsed.warnings, hydrated: true });
   },
 
   reset() {
-    set({ config: DEFAULT_CONFIG, contentType: "url", fields: EMPTY_FIELDS, fromUrl: false, urlWarnings: [] });
+    set({ ...initialState(get().pageDefaults), fromUrl: false, urlWarnings: [] });
     persist(get());
   },
 }));
