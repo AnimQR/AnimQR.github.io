@@ -16,6 +16,9 @@ browser, with no sign-up and no tracking, and nothing you type is uploaded.
 - **Built-in scannability check:** frames are decoded in the browser (jsQR) as you edit
 - **Presets:** built-in styles, plus your own saved in `localStorage`
 - **Embed mode:** `?embed=1` shows only the code, for iframes
+- **Guided, mobile-first editor:** numbered Content → Style → Animate steps, a live mini-preview
+  that follows you while you edit, a thumb-friendly download/share bar on phones, native share
+  sheet support, undo/redo (Ctrl/Cmd+Z), and light/dark/system themes
 - **Preloaded URL:** first-time visitors see a ready-made, scannable code instead of an empty form
 - **SEO-ready:** landing pages for each use case, a sitemap, robots.txt, structured data,
   social cards, favicons and a web app manifest (see [SEO](#seo))

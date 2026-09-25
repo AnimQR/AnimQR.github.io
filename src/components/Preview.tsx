@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { renderFrame, type RenderModel } from "@/lib/qr/render";
 import { loadLogo } from "@/lib/logo";
 import type { LogoSource } from "@/lib/qr/render";
+import { restingTime } from "@/lib/useExporter";
 
 export function useLogo(src: string) {
   const [state, setState] = useState<{ src: string; logo: LogoSource | null; error: string }>({ src: "", logo: null, error: "" });
@@ -79,7 +80,4 @@ export function Preview({
   );
 }
 
-/** A time at which the animation shows the code fully assembled. */
-export function restingTime(anim: string) {
-  return anim === "reveal" || anim === "particle" ? 0.7 : 0;
-}
+export { restingTime } from "@/lib/useExporter";

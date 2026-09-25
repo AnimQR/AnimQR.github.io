@@ -1,6 +1,21 @@
 @import "tailwindcss";
 
 /*
+ * `dark:` utilities follow the theme switcher: an explicit .dark/.light class on <html> wins,
+ * otherwise the OS preference applies.
+ */
+@custom-variant dark {
+  &:where(.dark, .dark *) {
+    @slot;
+  }
+  @media (prefers-color-scheme: dark) {
+    &:where(:root:not(.light), :root:not(.light) *) {
+      @slot;
+    }
+  }
+}
+
+/*
  * Theme: navy blue + maroon.
  * Navy carries backgrounds and text; maroon is the accent (buttons, active states, highlights).
  * `accent-ink` is the accent used for text and focus rings, tuned for contrast on each background.
@@ -31,8 +46,70 @@
   }
 }
 
+/* Explicit light theme chosen in the switcher. */
+:root.light {
+  --color-bg: #f7f5f6;
+  --color-surface: #ffffff;
+  --color-surface-2: #ffffff;
+  --color-line: #dcdde8;
+  --color-fg: #0a1f44;
+  --color-muted: #4a5675;
+  --color-accent: #800020;
+  --color-accent-ink: #800020;
+}
+
 html {
   color-scheme: dark light;
+}
+html.light {
+  color-scheme: light;
+}
+html.dark {
+  color-scheme: dark;
+}
+
+/* Room for the fixed mobile download bar (plus the iPhone home indicator). */
+@media (max-width: 1023px) {
+  html.has-action-bar body {
+    padding-bottom: calc(5.25rem + env(safe-area-inset-bottom));
+  }
+}
+
+/* Larger, easier-to-grab slider thumbs on touch screens. */
+@media (pointer: coarse) {
+  input[type="range"].range::-webkit-slider-thumb {
+    width: 26px;
+    height: 26px;
+  }
+  input[type="range"].range::-moz-range-thumb {
+    width: 26px;
+    height: 26px;
+  }
+}
+
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+}
+.toast-in {
+  animation: toast-in 180ms ease-out;
+}
+
+@keyframes panel-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+}
+.panel-in {
+  animation: panel-in 160ms ease-out;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
@@ -66,8 +143,14 @@ html.embed body {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  * {
+  *,
+  *::before,
+  *::after {
     transition: none !important;
+    animation: none !important;
+  }
+  html {
+    scroll-behavior: auto;
   }
 }
 

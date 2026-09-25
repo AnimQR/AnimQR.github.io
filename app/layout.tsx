@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { JsonLd } from "@/components/seo/JsonLd";
+import { THEME_SCRIPT } from "@/lib/theme";
 import { organizationSchema, websiteSchema } from "@/lib/schema";
 import { SITE, SITE_URL } from "@/lib/site";
 import "./globals.css";
@@ -52,6 +53,7 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
+  viewportFit: "cover",
   colorScheme: "dark light",
   themeColor: [
     { media: "(prefers-color-scheme: light)", color: SITE.themeColor.light },
@@ -61,7 +63,10 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang={SITE.language}>
+    <html lang={SITE.language} suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} />
+      </head>
       <body className="min-h-screen font-sans antialiased">
         <JsonLd data={[websiteSchema(), organizationSchema()]} />
         {children}
