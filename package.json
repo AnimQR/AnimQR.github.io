@@ -1,0 +1,37 @@
+{
+  "name": "animqr",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Free & open-source animated, styled QR code generator. Runs entirely in the browser.",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "npx serve out",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "gifenc": "^1.0.3",
+    "jsqr": "^1.4.0",
+    "lz-string": "^1.5.0",
+    "next": "^16.3.6",
+    "qrcode-generator": "^2.0.4",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
+    "zustand": "^5.0.15"
+  },
+  "devDependencies": {
+    "@napi-rs/canvas": "^1.0.9",
+    "@tailwindcss/postcss": "^4.3.3",
+    "@types/node": "^26.6.2",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "postcss": "^8.5.28",
+    "tailwindcss": "^4.3.3",
+    "typescript": "^5.9.3",
+    "vitest": "^5.0.2"
+  }
+}

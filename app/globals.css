@@ -1,0 +1,64 @@
+@import "tailwindcss";
+
+@theme {
+  --color-bg: #0b0d14;
+  --color-surface: #121521;
+  --color-surface-2: #181c2b;
+  --color-line: #2a3045;
+  --color-fg: #e8eaf2;
+  --color-muted: #9aa1b8;
+  --color-accent: #7c5cff;
+}
+
+@media (prefers-color-scheme: light) {
+  :root:not(.dark) {
+    --color-bg: #f7f7fb;
+    --color-surface: #ffffff;
+    --color-surface-2: #ffffff;
+    --color-line: #dcdfea;
+    --color-fg: #151827;
+    --color-muted: #5d6479;
+    --color-accent: #6a48f5;
+  }
+}
+
+html {
+  color-scheme: dark light;
+}
+
+body {
+  background: var(--color-bg);
+  color: var(--color-fg);
+  -webkit-tap-highlight-color: transparent;
+}
+
+html.embed body {
+  background: transparent;
+}
+
+.checkerboard {
+  background-color: var(--color-surface);
+  background-image:
+    linear-gradient(45deg, var(--color-surface-2) 25%, transparent 25%),
+    linear-gradient(-45deg, var(--color-surface-2) 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, var(--color-surface-2) 75%),
+    linear-gradient(-45deg, transparent 75%, var(--color-surface-2) 75%);
+  background-size: 20px 20px;
+  background-position: 0 0, 0 10px, 10px -10px, -10px 0;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+  }
+}
+
+html.embed header,
+html.embed footer {
+  display: none;
+}
