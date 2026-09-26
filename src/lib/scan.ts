@@ -63,6 +63,7 @@ export async function checkScannability(config: QRConfig, logo: LogoSource | nul
     const img = ctx.getImageData(0, 0, canvas.width, canvas.height);
     return { data: img.data, width: img.width, height: img.height };
   });
+  canvas.width = canvas.height = 0; // free canvas memory now (iOS has a hard cap)
 
   const w = getWorker();
   if (w) {
