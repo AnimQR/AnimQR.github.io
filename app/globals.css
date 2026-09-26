@@ -75,6 +75,18 @@ html.dark {
   }
 }
 
+/* No double-tap-to-zoom delay on controls (iOS). */
+a,
+button,
+input,
+select,
+textarea,
+label,
+summary,
+[role="switch"] {
+  touch-action: manipulation;
+}
+
 /* Larger, easier-to-grab slider thumbs on touch screens. */
 @media (pointer: coarse) {
   input[type="range"].range::-webkit-slider-thumb {

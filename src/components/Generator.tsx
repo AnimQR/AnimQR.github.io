@@ -11,7 +11,7 @@ import { useStore } from "@/lib/store";
 import { AnimationPanel } from "./AnimationPanel";
 import { ContentPanel } from "./ContentPanel";
 import { DownloadButton, ExportBar, FormatSelect } from "./ExportBar";
-import { Preview, useLogo } from "./Preview";
+import { MiniPreview, Preview, useLogo } from "./Preview";
 import { StylePanel } from "./StylePanel";
 import { canNativeShare, copyText, shareFile, shareLink } from "@/lib/share";
 import { toast } from "@/lib/toast";
@@ -21,6 +21,9 @@ import { Toggle } from "./ui";
 const BASE_PATH = process.env.NEXT_PUBLIC_BASE_PATH || "";
 const PREVIEW_MAX = 720;
 const PLACEHOLDER_DATA = "https://animqr.github.io";
+/** Tallest the preview may get: leaves room for the editor on phones (svh ignores Safari's toolbars). */
+const PREVIEW_MAX_H = "min(58svh, 30rem)";
+const PREVIEW_BOX = "checkerboard relative flex w-full items-center justify-center overflow-hidden rounded-2xl border border-line p-4 sm:p-6";
 
 type Tab = "content" | "style" | "animation";
 
@@ -159,7 +162,37 @@ function ShareControls({ config, exporter, disabled }: { config: QRConfig; expor
 }
 
 /** Always-visible download/share bar on phones and tablets. */
+/** True while an on-screen keyboard is likely open (a text field has focus). */
+function useTypingFocus() {
+  const [typing, setTyping] = useState(false);
+  useEffect(() => {
+    let t: ReturnType<typeof setTimeout>;
+    const isField = (el: EventTarget | null) =>
+      el instanceof HTMLElement && el.matches("textarea, input:not([type=range]):not([type=color]):not([type=checkbox]):not([type=radio]):not([type=file])");
+    const onIn = (e: FocusEvent) => {
+      clearTimeout(t);
+      if (isField(e.target)) setTyping(true);
+    };
+    // Delay so moving between fields doesn't make the bar flicker.
+    const onOut = () => {
+      clearTimeout(t);
+      t = setTimeout(() => setTyping(isField(document.activeElement)), 120);
+    };
+    document.addEventListener("focusin", onIn);
+    document.addEventListener("focusout", onOut);
+    return () => {
+      clearTimeout(t);
+      document.removeEventListener("focusin", onIn);
+      document.removeEventListener("focusout", onOut);
+    };
+  }, []);
+  return typing;
+}
+
 function MobileActionBar({ config, exporter, disabled }: { config: QRConfig; exporter: Exporter; disabled: boolean }) {
+  // On iOS a fixed bar rides on top of the keyboard and hides the field being edited.
+  const typing = useTypingFocus();
+  if (typing) return null;
   return (
     <div className="fixed inset-x-0 bottom-0 z-40 border-t border-line bg-bg/95 px-3 pt-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] shadow-[0_-8px_30px_rgba(0,0,0,0.12)] backdrop-blur lg:hidden">
       <div className="mx-auto flex max-w-xl items-center gap-2">
@@ -241,7 +274,7 @@ export function Generator({ defaults, restoreSaved = true, initialSvg, initialAl
   useEffect(() => {
     const el = previewRef.current;
     if (!el || typeof IntersectionObserver === "undefined") return;
-    const io = new IntersectionObserver(([e]) => setPreviewVisible(e.intersectionRatio > 0.25), { threshold: [0, 0.25, 0.5] });
+    const io = new IntersectionObserver(([e]) => setPreviewVisible(e.intersectionRatio >= 0.6), { threshold: [0, 0.3, 0.6, 1] });
     io.observe(el);
     return () => io.disconnect();
   }, [hydrated, embed]);
@@ -277,12 +310,13 @@ export function Generator({ defaults, restoreSaved = true, initialSvg, initialAl
     return (
       <div className="mx-auto grid max-w-6xl grid-cols-1 gap-6 px-4 pb-16 lg:grid-cols-[minmax(0,1fr)_minmax(0,440px)] lg:gap-10">
         <div className="lg:order-2">
-          <div className="checkerboard flex aspect-square items-center justify-center overflow-hidden rounded-2xl border border-line p-6">
+          <div className={PREVIEW_BOX}>
             {initialSvg ? (
               <div
                 role="img"
                 aria-label={initialAlt ?? "QR code preview"}
-                className="aspect-square w-full max-w-full drop-shadow-xl [&>svg]:h-full [&>svg]:w-full"
+                className="drop-shadow-xl [&>svg]:block [&>svg]:h-auto [&>svg]:w-full"
+                style={{ width: `min(100%, ${PREVIEW_MAX_H})` }}
                 dangerouslySetInnerHTML={{ __html: initialSvg }}
               />
             ) : (
@@ -290,7 +324,7 @@ export function Generator({ defaults, restoreSaved = true, initialSvg, initialAl
             )}
           </div>
         </div>
-        <div className="flex min-h-[40vh] items-start text-sm text-muted lg:order-1">Loading the editor…</div>
+        <div className="flex min-h-[40svh] items-start text-sm text-muted lg:order-1">Loading the editor…</div>
       </div>
     );
   }
@@ -299,7 +333,7 @@ export function Generator({ defaults, restoreSaved = true, initialSvg, initialAl
     return (
       <div className="flex min-h-screen items-center justify-center p-2">
         {model && hasData ? (
-          <Preview model={model} duration={config.duration} playing className="max-h-[calc(100vh-1rem)] w-auto" />
+          <Preview model={model} duration={config.duration} playing maxHeight="calc(100svh - 1rem)" />
         ) : (
           <p className="text-sm text-muted">{error || "No data provided."}</p>
         )}
@@ -367,13 +401,13 @@ export function Generator({ defaults, restoreSaved = true, initialSvg, initialAl
 
           <div
             ref={previewRef}
-            className="checkerboard relative mx-auto flex aspect-square max-h-[min(72vh,34rem)] w-full items-center justify-center overflow-hidden rounded-2xl border border-line p-5 sm:p-6"
+            className={PREVIEW_BOX}
           >
             {model ? (
               <button
                 type="button"
                 onClick={() => animated && setPlaying((p) => !p)}
-                className={`flex h-full w-full items-center justify-center ${animated ? "cursor-pointer" : "cursor-default"}`}
+                className={`flex w-full items-center justify-center ${animated ? "cursor-pointer" : "cursor-default"}`}
                 aria-label={animated ? (playing ? "Pause animation" : "Play animation") : "QR code preview"}
                 tabIndex={animated ? 0 : -1}
               >
@@ -381,7 +415,8 @@ export function Generator({ defaults, restoreSaved = true, initialSvg, initialAl
                   model={model}
                   duration={config.duration}
                   playing={playing}
-                  className={`max-h-full w-auto drop-shadow-xl transition-opacity ${hasData ? "" : "opacity-20"}`}
+                  maxHeight={PREVIEW_MAX_H}
+                  className={`drop-shadow-xl transition-opacity ${hasData ? "" : "opacity-20"}`}
                 />
               </button>
             ) : (
@@ -422,10 +457,10 @@ export function Generator({ defaults, restoreSaved = true, initialSvg, initialAl
               <button
                 type="button"
                 onClick={scrollToPreview}
-                className="-ml-1 grid h-11 w-11 shrink-0 place-items-center rounded-lg border border-line bg-white p-0.5 lg:hidden"
+                className="-ml-1 grid h-11 w-11 shrink-0 place-items-center overflow-hidden rounded-lg border border-line bg-white lg:hidden"
                 aria-label="Show the full preview"
               >
-                <Preview model={model} duration={config.duration} playing={false} className="h-full w-auto" />
+                <MiniPreview model={model} size={38} />
               </button>
             )}
             <div role="tablist" aria-label="Editor steps" className="grid min-w-0 flex-1 grid-cols-3 sm:flex sm:gap-1">
