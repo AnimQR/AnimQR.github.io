@@ -30,11 +30,17 @@ export function Preview({
   duration,
   playing,
   className = "",
+  maxHeight,
 }: {
   model: RenderModel;
   duration: number;
   playing: boolean;
   className?: string;
+  /**
+   * Largest height the code may take, as a CSS length. The width is derived from it explicitly
+   * (never via percentage heights, which iOS Safari resolves against the canvas's intrinsic size).
+   */
+  maxHeight?: string;
 }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const startRef = useRef<number>(performance.now());
@@ -74,10 +80,47 @@ export function Preview({
       ref={canvasRef}
       role="img"
       aria-label={`QR code for: ${model.config.data}`}
-      className={`h-auto max-w-full ${className}`}
-      style={{ aspectRatio: `${model.layout.width} / ${model.layout.height}` }}
+      className={`block h-auto max-w-full ${className}`}
+      style={{
+        aspectRatio: `${model.layout.width} / ${model.layout.height}`,
+        width: maxHeight ? `min(100%, calc(${maxHeight} * ${model.layout.width / model.layout.height}))` : "100%",
+      }}
     />
   );
+}
+
+/**
+ * Small static thumbnail with fixed pixel dimensions (used in the sticky editor bar).
+ * Rendered from its own low-resolution model so it is cheap and layout-independent.
+ */
+export function MiniPreview({ model, size = 40 }: { model: RenderModel; size?: number }) {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const { width, height } = model.layout;
+  const scale = Math.min(size / width, size / height);
+  const cssW = Math.round(width * scale);
+  const cssH = Math.round(height * scale);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const dpr = Math.min(3, window.devicePixelRatio || 1);
+    canvas.width = Math.round(cssW * dpr);
+    canvas.height = Math.round(cssH * dpr);
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+    // Render at full layout size off-screen, then downscale for a crisp thumbnail.
+    const off = document.createElement("canvas");
+    off.width = width;
+    off.height = height;
+    const octx = off.getContext("2d");
+    if (!octx) return;
+    renderFrame(octx, model, model.config.anim !== "none" ? restingTime(model.config.anim) : 0, { matte: "#ffffff" });
+    ctx.imageSmoothingQuality = "high";
+    ctx.drawImage(off, 0, 0, canvas.width, canvas.height);
+    off.width = off.height = 0; // release memory promptly (iOS caps total canvas memory)
+  }, [model, cssW, cssH, width, height]);
+
+  return <canvas ref={canvasRef} aria-hidden className="block shrink-0" style={{ width: cssW, height: cssH }} />;
 }
 
 export { restingTime } from "@/lib/useExporter";

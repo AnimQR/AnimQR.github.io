@@ -51,7 +51,11 @@ export async function exportRaster(
   renderFrame(ctx, model, t, type === "jpeg" ? { matte: "#ffffff" } : {});
   return new Promise((resolve, reject) =>
     canvas.toBlob(
-      (b) => (b ? resolve(b) : reject(new Error("Could not encode image (is the logo CORS-enabled?)"))),
+      (b) => {
+        canvas.width = canvas.height = 0; // free canvas memory (iOS has a hard cap)
+        if (b) resolve(b);
+        else reject(new Error("Could not encode image (is the logo CORS-enabled?)"));
+      },
       type === "jpeg" ? "image/jpeg" : "image/png",
       0.92,
     ),
@@ -96,6 +100,7 @@ export async function exportGif(config: QRConfig, logo: LogoSource | null, onPro
     onProgress?.((i + 1) / frames, `Encoding frame ${i + 1}/${frames}`);
     if (i % 2 === 1) await nextTick();
   }
+  ctx.canvas.width = ctx.canvas.height = 0;
   gif.finish();
   return new Blob([gif.bytes() as BlobPart], { type: "image/gif" });
 }
@@ -155,6 +160,7 @@ export async function exportVideo(
   recorder.stop();
   stream.getTracks().forEach((tr) => tr.stop());
   await done;
+  canvas.width = canvas.height = 0;
   onProgress?.(1);
   return { blob: new Blob(chunks, { type: picked.mime.split(";")[0] }), ext: picked.ext };
 }
